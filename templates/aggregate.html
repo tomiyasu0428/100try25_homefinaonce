@@ -1,13 +1,80 @@
 {% extends "base.html" %}
 {% block title %}集計結果 - 家計簿アプリ{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
 {% block content %}
 <h1>今月の集計結果</h1>
-<div class="card">
+<div class="card mb-3">
     <div class="card-body">
-        <p><strong>総収入:</strong> {{ total_income }} 円</p>
-        <p><strong>総支出:</strong> {{ total_expense }} 円</p>
-        <p><strong>差引（収支）:</strong> {{ balance }} 円</p>
+        <p class="text-success"><strong>総収入:</strong> {{ "{:,}".format(total_income|int) }} 円</p>
+        <p class="text-danger"><strong>総支出:</strong> {{ "{:,}".format(total_expense|int) }} 円</p>
+        <p class="text-{% if overall_total >= 0 %}success{% else %}danger{% endif %}">
+            <strong>全体収支:</strong> {{ "{:,}".format(overall_total|int) }} 円
+        </p>
     </div>
 </div>
-<a href="{{ url_for('index') }}" class="btn btn-primary mt-3">ホームへ戻る</a>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2>カテゴリ別支出</h2>
+        <canvas id="expenseChart" width="400" height="400"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h2>カテゴリ別内訳</h2>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>カテゴリ</th>
+                        <th>金額</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in monthly_records %}
+                    <tr class="{% if record.category == '収入' %}table-success{% else %}table-danger{% endif %}">
+                        <td>{{ record.category }}</td>
+                        <td>{{ "{:,}".format(record.total|abs|int) }} 円</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    const data = {
+        labels: {{ chart_data.labels|tojson }},
+        datasets: [{
+            data: {{ chart_data.data|tojson }},
+            backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#4BC0C0',
+                '#9966FF'
+            ],
+            hoverOffset: 4
+        }]
+    };
+    new Chart(ctx, {
+        type: 'pie',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'カテゴリ別支出割合'
+                }
+            }
+        }
+    });
+</script>
+
+<div class="mt-3">
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">ホームへ戻る</a>
+</div>
 {% endblock %}

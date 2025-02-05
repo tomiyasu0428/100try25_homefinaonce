@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}レシート読み取り - 家計簿アプリ{% endblock %}
+{% block content %}
+<h1>レシート読み取り</h1>
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">レシート画像を選択</label>
+        <input type="file" class="form-control-file" name="file" id="file" required>
+    </div>
+    <button type="submit" class="btn btn-primary">アップロード＆OCR実行</button>
+</form>
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">ホームへ戻る</a>
+{% endblock %}
