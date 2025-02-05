@@ -1,0 +1,9 @@
+body {
+    padding-top: 60px;
+}
+h1, h2 {
+    margin-bottom: 20px;
+}
+.table td, .table th {
+    vertical-align: middle;
+}

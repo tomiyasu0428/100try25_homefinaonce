@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}集計結果 - 家計簿アプリ{% endblock %}
+{% block content %}
+<h1>今月の集計結果</h1>
+<div class="card">
+    <div class="card-body">
+        <p><strong>総収入:</strong> {{ total_income }} 円</p>
+        <p><strong>総支出:</strong> {{ total_expense }} 円</p>
+        <p><strong>差引（収支）:</strong> {{ balance }} 円</p>
+    </div>
+</div>
+<a href="{{ url_for('index') }}" class="btn btn-primary mt-3">ホームへ戻る</a>
+{% endblock %}
